@@ -60,4 +60,6 @@
     <string name="item_name_main">Item Name</string>
     <string name="welcome_login_to_see_our_amazing_items">Welcome! Login to see our amazing Items</string>
     <string name="email_address">email address</string>
+    <string name="logout">Logout</string>
+    <string name="settings">Settings</string>
 </resources>

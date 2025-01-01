@@ -2,12 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
-        android:id="@+id/mainMenu"
-        android:title="Menu"
-        app:showAsAction="never"
-        >
 
-    </item>
+        <item
+            android:id="@+id/settings"
+            android:title="@string/settings"
+            android:icon="@drawable/button_border"
+            android:actionLayout="@menu/menu_item_layout"
+            app:showAsAction="never">
+        </item>
+        <item
+            android:id="@+id/logout"
+            android:title="@string/logout"
+            app:showAsAction="never"
+            android:actionLayout="@menu/menu_item_layout">
+        </item>
 
 </menu>
