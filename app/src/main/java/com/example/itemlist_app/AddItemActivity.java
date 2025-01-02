@@ -13,10 +13,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.material.textfield.TextInputEditText;
+
 public class AddItemActivity extends AppCompatActivity {
     Toolbar toolbar;
-    EditText editTextName ;
-    EditText editTextPrice;
+    TextInputEditText editTextName ;
+    TextInputEditText editTextPrice;
     EditText editId;
     String textName;
     String textPrice;
@@ -36,8 +38,8 @@ public class AddItemActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_item);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        editTextName = (EditText) findViewById(R.id.itemName);
-        editTextPrice = (EditText) findViewById(R.id.itemPrice);
+        editTextName = (TextInputEditText) findViewById(R.id.itemName);
+        editTextPrice = (TextInputEditText) findViewById(R.id.itemPrice);
         add = (Button) findViewById(R.id.add);
         cancel = (Button) findViewById(R.id.cancel);
 
@@ -52,8 +54,11 @@ public class AddItemActivity extends AppCompatActivity {
                 intent = new Intent(AddItemActivity.this, MainActivity.class);
                 intent.putExtra("input_value_name",textName);
                 intent.putExtra("input_value_price",textPrice);
-//                intent.putExtra("input_value_id",id);
+                intent.putExtra("input_value_id",id);
                 startActivity(intent);
+
+                setResult(RESULT_OK, intent);
+                finish();
             }
         });
 

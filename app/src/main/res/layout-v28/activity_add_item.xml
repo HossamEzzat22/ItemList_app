@@ -71,32 +71,6 @@
             android:inputType="number" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <LinearLayout
-        android:id="@+id/defaultId"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:layout_margin="20dp"
-        android:layout_below="@id/priceInputLayout">
-
-        <TextView
-            android:id="@+id/id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/id"
-            android:textColor="@android:color/black"
-            android:textSize="25sp" />
-
-        <TextView
-            android:id="@+id/idValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            android:layout_marginStart="20dp"
-            android:textSize="25sp" />
-
-    </LinearLayout>
-
     <Button
         android:id="@+id/add"
         android:layout_width="match_parent"
@@ -110,7 +84,6 @@
         android:textColor="@color/white"
         android:textSize="20sp" />
 
-    <!-- Cancel Button -->
     <Button
         android:id="@+id/cancel"
         android:layout_width="match_parent"
