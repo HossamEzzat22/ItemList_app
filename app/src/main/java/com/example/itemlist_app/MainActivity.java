@@ -2,93 +2,71 @@ package com.example.itemlist_app;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
+import adapters.CustomAdapter;
 import models.Item;
 
-public class MainActivity extends AppCompatActivity {
-    Toolbar toolbar;
-    FloatingActionButton fab;
-    LinearLayout itemListContainer;
-    TextView emptyListTextView;
-    ArrayList<Item> itemList;
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+    private static final int ADD_ITEM_REQUEST = 1;
+    private ArrayList<Item> itemList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Initialize views
-        itemListContainer = findViewById(R.id.itemListContainer);
-        emptyListTextView = findViewById(R.id.emptyList);
+        // Initialize item list and adapter
         itemList = new ArrayList<>();
+        ListView listView = findViewById(R.id.customlistview);
+        CustomAdapter customAdapter= new CustomAdapter(MainActivity.this,itemList);
+        // Set up RecyclerView
+        listView.setAdapter(customAdapter);
+        listView.setOnItemClickListener(this);
 
-        toolbar = findViewById(R.id.toolbar);
-        fab = findViewById(R.id.fab);
-
-        // Set toolbar
-        setSupportActionBar(toolbar);
-
-        // Setup FAB to open AddItemActivity
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, AddItemActivity.class);
-                startActivityForResult(intent, 1);  // Start AddItemActivity and expect a result
-            }
+        // Set up Floating Action Button (FAB)
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(v -> {
+            // Open AddItemActivity to add a new item
+            Intent intent = new Intent(MainActivity.this, AddItemActivity.class);
+            startActivityForResult(intent, ADD_ITEM_REQUEST);
         });
-
-        // Check if there are any items added already
-        if (itemList.isEmpty()) {
-            emptyListTextView.setVisibility(View.VISIBLE);
-        } else {
-            emptyListTextView.setVisibility(View.GONE);
-        }
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            String name = data.getStringExtra("input_value_name");
-            String price = data.getStringExtra("input_value_price");
-            String id = data.getStringExtra("input_value_id");
+        if (requestCode == 1 && resultCode == RESULT_OK) { // Request code 1 corresponds to AddItemActivity
+            // Retrieve the item details from the result Intent
+            String itemName = data.getStringExtra("new_item_name");
+            String itemPrice = data.getStringExtra("new_item_price");
+            String itemId = String.valueOf(itemList.size() + 1); // Generate ID based on list size
 
-            if (name != null && price != null && id != null) {
-                Item newItem = new Item(name, price, id);
-                itemList.add(newItem);
-                addItemToView(newItem); // Add the item to the container
+            // Create a new Item object
+            Item newItem = new Item(itemName, itemPrice, itemId);
 
-                // Hide the empty list message if items are added
-                emptyListTextView.setVisibility(View.GONE);
-            }
+            // Add the new item to the list and notify the adapter
+            itemList.add(newItem);
+            .notifyItemInserted(itemList.size() - 1);
+        } else {
+            Toast.makeText(this, "Item not added.", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void addItemToView(Item item) {
-        // Inflate the item card layout and set data
-        View itemView = LayoutInflater.from(this).inflate(R.layout.item_card, itemListContainer, false);
-
-        TextView itemName = itemView.findViewById(R.id.tvItemName);
-        TextView itemPrice = itemView.findViewById(R.id.tvItemPrice);
-        TextView itemId = itemView.findViewById(R.id.tvItemId);
-
-        itemName.setText(item.getName());
-        itemPrice.setText(item.getPrice());
-        itemId.setText(item.getId());
-
-        // Add the item card to the LinearLayout
-        itemListContainer.addView(itemView);
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Item list= itemList.get(position);
+        Toast.makeText(MainActivity.this,"item name"+list.getName(),Toast.LENGTH_SHORT).show();
     }
 }

@@ -15,21 +15,14 @@
         app:title="My Item List"
         app:titleTextColor="@android:color/white" />
 
-    <ScrollView
+    <ListView
+        android:id="@+id/customlistview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
-        android:layout_marginTop="10dp"
-        android:layout_above="@id/fab">
+        android:divider="@color/black"
+        android:dividerHeight="2dp"
+        />
 
-        <LinearLayout
-            android:id="@+id/itemListContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="8dp">
-        </LinearLayout>
-    </ScrollView>
 
     <TextView
         android:id="@+id/emptyList"

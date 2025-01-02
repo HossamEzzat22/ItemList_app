@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -32,6 +32,7 @@
                 android:id="@+id/tvItemName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
                 android:textSize="16sp"
                 android:textColor="#000000" />
         </LinearLayout>
@@ -54,6 +55,7 @@
                 android:id="@+id/tvItemPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
                 android:textSize="16sp"
                 android:textColor="#000000" />
         </LinearLayout>
@@ -76,7 +78,9 @@
                 android:id="@+id/tvItemId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
+                android:layout_marginStart="20dp"
+
+                android:textSize="16sp"
                 android:textColor="#333333" />
         </LinearLayout>
 
@@ -108,4 +112,4 @@
         </LinearLayout>
     </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

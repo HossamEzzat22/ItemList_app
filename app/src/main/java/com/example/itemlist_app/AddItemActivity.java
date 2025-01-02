@@ -15,6 +15,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.textfield.TextInputEditText;
 
+import models.Item;
+
 public class AddItemActivity extends AppCompatActivity {
     Toolbar toolbar;
     TextInputEditText editTextName ;
@@ -22,13 +24,14 @@ public class AddItemActivity extends AppCompatActivity {
     EditText editId;
     String textName;
     String textPrice;
-    String id;
+    int id;
 
 
     Button add;
     Button cancel;
 
     Intent intent;
+
 
 
 
@@ -43,25 +46,33 @@ public class AddItemActivity extends AppCompatActivity {
         add = (Button) findViewById(R.id.add);
         cancel = (Button) findViewById(R.id.cancel);
 
+
+
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                textName=editTextName.getText().toString();
-                textPrice=editTextPrice.getText().toString();
-//                id = editId.getText().toString();
+                textName = editTextName.getText().toString();
+                textPrice = editTextPrice.getText().toString();
 
-                // Pass the text to the next screen using Intent
-                intent = new Intent(AddItemActivity.this, MainActivity.class);
-                intent.putExtra("input_value_name",textName);
-                intent.putExtra("input_value_price",textPrice);
-                intent.putExtra("input_value_id",id);
+                if (textName.isEmpty() || textPrice.isEmpty()) {
+                    Toast.makeText(AddItemActivity.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Create a new Item object and set its values
+                Item newItem = new Item("", "", ""); // Temporary values
+                newItem.setName(textName);
+                newItem.setPrice(textPrice);
+                newItem.setName(String.valueOf(id));
+
+                // Send the data back to MainActivity
+                Intent intent = new Intent(AddItemActivity.this,MainActivity.class);
+                intent.putExtra("new_item_name", newItem.getName());
+                intent.putExtra("new_item_price", newItem.getPrice());
                 startActivity(intent);
-
-                setResult(RESULT_OK, intent);
                 finish();
             }
         });
-
 
 
         setSupportActionBar(toolbar);
