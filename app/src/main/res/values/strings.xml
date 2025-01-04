@@ -62,4 +62,6 @@
     <string name="email_address">email address</string>
     <string name="login">Login</string>
     <string name="menuimage">menuImage</string>
+    <string name="settings" />
+    <string name="logout" />
 </resources>

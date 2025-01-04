@@ -1,7 +1,9 @@
 package com.example.itemlist_app;
 
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,12 +21,12 @@ import models.Item;
 
 public class AddItemActivity extends AppCompatActivity {
     Toolbar toolbar;
-    TextInputEditText editTextName ;
+    TextInputEditText editTextName;
     TextInputEditText editTextPrice;
     EditText editId;
     String textName;
     String textPrice;
-    int id;
+    String id;
 
 
     Button add;
@@ -33,10 +35,8 @@ public class AddItemActivity extends AppCompatActivity {
     Intent intent;
 
 
-
-
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_item);
 
@@ -45,7 +45,6 @@ public class AddItemActivity extends AppCompatActivity {
         editTextPrice = (TextInputEditText) findViewById(R.id.itemPrice);
         add = (Button) findViewById(R.id.add);
         cancel = (Button) findViewById(R.id.cancel);
-
 
 
         add.setOnClickListener(new View.OnClickListener() {
@@ -58,18 +57,19 @@ public class AddItemActivity extends AppCompatActivity {
                     Toast.makeText(AddItemActivity.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                // Generate ID automatically based on current item list size (or any other logic)
+                id = String.valueOf(System.currentTimeMillis()); // Unique ID based on timestamp
 
                 // Create a new Item object and set its values
-                Item newItem = new Item("", "", ""); // Temporary values
-                newItem.setName(textName);
-                newItem.setPrice(textPrice);
-                newItem.setName(String.valueOf(id));
+                Item newItem = new Item(textName, textPrice, id); // Temporary values
 
                 // Send the data back to MainActivity
-                Intent intent = new Intent(AddItemActivity.this,MainActivity.class);
+                Intent intent = new Intent(AddItemActivity.this, MainActivity.class);
                 intent.putExtra("new_item_name", newItem.getName());
                 intent.putExtra("new_item_price", newItem.getPrice());
-                startActivity(intent);
+                intent.putExtra("new_item_id", newItem.getId());
+
+                setResult(RESULT_OK, intent);
                 finish();
             }
         });

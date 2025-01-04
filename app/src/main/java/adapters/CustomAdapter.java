@@ -20,7 +20,7 @@ public class CustomAdapter extends BaseAdapter{
     private final ArrayList<Item> myItems;
 
     public CustomAdapter(MainActivity mainActivity, ArrayList<Item> myItems) {
-        this.context = context;
+        this.context = mainActivity;
         this.myItems = myItems;
     }
 
@@ -54,6 +54,8 @@ public class CustomAdapter extends BaseAdapter{
         Item list = myItems.get(position);
         holderView.textName.setText(list.getName());
         holderView.textPrice.setText(list.getPrice());
+        holderView.textId.setText(list.getId()); // Setting the ID here
+
 
         return convertView;
     }
@@ -61,11 +63,11 @@ public class CustomAdapter extends BaseAdapter{
     public static class HolderView{
         private final TextView textName;
         private final TextView textPrice;
-
+        private final TextView textId;
         public HolderView(View view) {
             textName = view.findViewById(R.id.tvItemName);
             textPrice = view.findViewById(R.id.tvItemPrice);
-
+            textId = view.findViewById(R.id.tvItemId);
         }
     }
 }
