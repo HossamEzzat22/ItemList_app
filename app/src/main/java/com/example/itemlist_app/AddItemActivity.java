@@ -1,103 +1,86 @@
 package com.example.itemlist_app;
 
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.textfield.TextInputEditText;
 
-import models.Item;
-
 public class AddItemActivity extends AppCompatActivity {
     Toolbar toolbar;
     TextInputEditText editTextName;
     TextInputEditText editTextPrice;
-    EditText editId;
-    String textName;
-    String textPrice;
-    String id;
-
-
     Button add;
     Button cancel;
-
-    Intent intent;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_item);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        editTextName = (TextInputEditText) findViewById(R.id.itemName);
-        editTextPrice = (TextInputEditText) findViewById(R.id.itemPrice);
-        add = (Button) findViewById(R.id.add);
-        cancel = (Button) findViewById(R.id.cancel);
-
-
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                textName = editTextName.getText().toString();
-                textPrice = editTextPrice.getText().toString();
-
-                if (textName.isEmpty() || textPrice.isEmpty()) {
-                    Toast.makeText(AddItemActivity.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                // Generate ID automatically based on current item list size (or any other logic)
-                id = String.valueOf(System.currentTimeMillis()); // Unique ID based on timestamp
-
-                // Create a new Item object and set its values
-                Item newItem = new Item(textName, textPrice, id); // Temporary values
-
-                // Send the data back to MainActivity
-                Intent intent = new Intent(AddItemActivity.this, MainActivity.class);
-                intent.putExtra("new_item_name", newItem.getName());
-                intent.putExtra("new_item_price", newItem.getPrice());
-                intent.putExtra("new_item_id", newItem.getId());
-
-                setResult(RESULT_OK, intent);
-                finish();
-            }
-        });
-
+        toolbar = findViewById(R.id.toolbar);
+        editTextName = findViewById(R.id.itemName);
+        editTextPrice = findViewById(R.id.itemPrice);
+        add = findViewById(R.id.add);
+        cancel = findViewById(R.id.cancel);
 
         setSupportActionBar(toolbar);
 
+        // If we are editing an item, fill the fields with current values
+        if (getIntent() != null && getIntent().hasExtra("edit_item_name") && getIntent().hasExtra("edit_item_price")) {
+            String itemName = getIntent().getStringExtra("edit_item_name");
+            String itemPrice = getIntent().getStringExtra("edit_item_price");
+
+            editTextName.setText(itemName);
+            editTextPrice.setText(itemPrice);
+
+            int position = getIntent().getIntExtra("item_position", -1);
+
+            // On "Save" button click (instead of "Add")
+            add.setText("Save");
+            add.setOnClickListener(v -> {
+                String updatedName = editTextName.getText().toString();
+                String updatedPrice = editTextPrice.getText().toString();
+
+                if (updatedName.isEmpty() || updatedPrice.isEmpty()) {
+                    Toast.makeText(AddItemActivity.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Send back the updated values (for editing)
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("new_item_name", updatedName);
+                resultIntent.putExtra("new_item_price", updatedPrice);
+                resultIntent.putExtra("item_position", position);
+                setResult(RESULT_OK, resultIntent);
+                finish();
+            });
+        } else {
+            add.setOnClickListener(v -> {
+                String name = editTextName.getText().toString();
+                String price = editTextPrice.getText().toString();
+
+                if (name.isEmpty() || price.isEmpty()) {
+                    Toast.makeText(AddItemActivity.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Use index as ID
+                int id = getIntent().getIntExtra("new_item_id", -1);  // The ID passed as an index
+
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("new_item_name", name);
+                resultIntent.putExtra("new_item_price", price);
+                resultIntent.putExtra("new_item_id", String.valueOf(id));  // Pass index as ID
+                setResult(RESULT_OK, resultIntent);
+                finish();
+            });
+        }
+
+        cancel.setOnClickListener(v -> finish());
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        // Handle action bar item clicks here.
-//        int id = item.getItemId();
-//
-//        // Handle menu item clicks
-//        if (id == R.id.mainMenu) {
-//            Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show();
-//            return true;
-//        }
-        return super.onOptionsItemSelected(item);
-    }
-
-
 }

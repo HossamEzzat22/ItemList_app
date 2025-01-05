@@ -12,6 +12,7 @@
         android:background="@color/purple_700"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/PopupMenuStyle"
         app:title="My Item List"
         app:titleTextColor="@android:color/white" />
 

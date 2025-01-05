@@ -1,9 +1,7 @@
 package com.example.itemlist_app;
 
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -12,19 +10,45 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
 import adapters.CustomAdapter;
+import models.ItemEditListener;
 import models.Item;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, ItemEditListener {
     private ArrayList<Item> itemList;
     CustomAdapter customAdapter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        itemList = new ArrayList<>();
+        ListView listView = findViewById(R.id.customlistview);
+        customAdapter = new CustomAdapter(MainActivity.this, itemList);
+        listView.setAdapter(customAdapter);
+        listView.setOnItemClickListener(this);
+
+        // Toolbar setup
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        // Floating Action Button (FAB)
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, AddItemActivity.class);
+            addItemLauncher.launch(intent);
+        });
+
+        updateEmptyListMessage();
+    }
 
     private final ActivityResultLauncher<Intent> addItemLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -32,46 +56,50 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                     String name = result.getData().getStringExtra("new_item_name");
                     String price = result.getData().getStringExtra("new_item_price");
-                    String id = String.valueOf(itemList.size() + 1);  // Assign ID based on list size (1-based index)
-                    itemList.add(new Item(name, price, id));
-                    customAdapter.notifyDataSetChanged();
+                    int position = result.getData().getIntExtra("item_position", -1);
+
+                    if (position != -1) {
+                        // Modify the item in the list
+                        itemList.get(position).setName(name);
+                        itemList.get(position).setPrice(price);
+                        customAdapter.notifyDataSetChanged();  // This will update the UI
+                    } else {
+                        // Add new item if position is -1 (not editing an existing one)
+                        int id = itemList.size()+1;  // Use index as ID
+                        itemList.add(new Item(name, price, String.valueOf(id))); // Add new item with index as ID
+                        customAdapter.notifyDataSetChanged();
+                    }
+
                     updateEmptyListMessage();
                 }
             }
     );
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        // Initialize item list and adapter
-        itemList = new ArrayList<>();
-        ListView listView = findViewById(R.id.customlistview);
-        customAdapter = new CustomAdapter(MainActivity.this, itemList);
-        listView.setAdapter(customAdapter);  // This line was missing
-
-        listView.setOnItemClickListener(this);
-
-        // Set up Floating Action Button (FAB)
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(v -> {
-            // Open AddItemActivity to add a new item
-            Intent intent = new Intent(MainActivity.this, AddItemActivity.class);
-            addItemLauncher.launch(intent);
-        });
-
-    }
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Item list = itemList.get(position);
-        Toast.makeText(MainActivity.this, "item name" + list.getName(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(MainActivity.this, AddItemActivity.class);
+        intent.putExtra("edit_item_name", list.getName());
+        intent.putExtra("edit_item_price", list.getPrice());
+        intent.putExtra("item_position", position);
+        addItemLauncher.launch(intent);
     }
-    private void updateEmptyListMessage() {
+
+    @Override
+    public void onEditItem(int position, Item item) {
+        Intent intent = new Intent(MainActivity.this, AddItemActivity.class);
+        intent.putExtra("edit_item_name", item.getName());
+        intent.putExtra("edit_item_price", item.getPrice());
+        intent.putExtra("item_position", position);
+        addItemLauncher.launch(intent);
+    }
+
+    public void updateEmptyListMessage() {
         TextView emptyListText = findViewById(R.id.emptyList);
         if (itemList.isEmpty()) {
-            emptyListText.setVisibility(View.VISIBLE); // Show "empty list" message
+            emptyListText.setVisibility(View.VISIBLE);
         } else {
-            emptyListText.setVisibility(View.GONE); // Hide "empty list" message
+            emptyListText.setVisibility(View.GONE);
         }
     }
 }
