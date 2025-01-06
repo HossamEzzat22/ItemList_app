@@ -1,12 +1,15 @@
 package com.example.itemlist_app;
 
+import static java.lang.Integer.MAX_VALUE;
+
+import android.app.ActivityManager;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -30,16 +33,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Intent serviceIntent = new Intent(getApplicationContext(), MyForegroundService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startService(serviceIntent);
+
+        }
+        foregroundServiceRunning();
+
+
+
+
+
+
         itemList = new ArrayList<>();
         ListView listView = findViewById(R.id.customlistview);
         customAdapter = new CustomAdapter(MainActivity.this, itemList);
         listView.setAdapter(customAdapter);
         listView.setOnItemClickListener(this);
 
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(v -> {
@@ -48,6 +61,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         });
 
         updateEmptyListMessage();
+    }
+    public  boolean foregroundServiceRunning (){
+        ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+
+        for (ActivityManager.RunningServiceInfo service : activityManager.getRunningServices(MAX_VALUE)){
+            if (MyForegroundService.class.getName().equals(service.service.getClassName())){
+                return true;
+            }
+        }
+        return false;
     }
 
     private final ActivityResultLauncher<Intent> addItemLauncher = registerForActivityResult(
