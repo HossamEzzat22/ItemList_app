@@ -30,7 +30,6 @@ public class AddItemActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
-        // If we are editing an item, fill the fields with current values
         if (getIntent() != null && getIntent().hasExtra("edit_item_name") && getIntent().hasExtra("edit_item_price")) {
             String itemName = getIntent().getStringExtra("edit_item_name");
             String itemPrice = getIntent().getStringExtra("edit_item_price");
@@ -40,7 +39,6 @@ public class AddItemActivity extends AppCompatActivity {
 
             int position = getIntent().getIntExtra("item_position", -1);
 
-            // On "Save" button click (instead of "Add")
             add.setText("Save");
             add.setOnClickListener(v -> {
                 String updatedName = editTextName.getText().toString();
@@ -51,7 +49,6 @@ public class AddItemActivity extends AppCompatActivity {
                     return;
                 }
 
-                // Send back the updated values (for editing)
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("new_item_name", updatedName);
                 resultIntent.putExtra("new_item_price", updatedPrice);
@@ -69,7 +66,6 @@ public class AddItemActivity extends AppCompatActivity {
                     return;
                 }
 
-                // Use index as ID
                 int id = getIntent().getIntExtra("new_item_id", -1);  // The ID passed as an index
 
                 Intent resultIntent = new Intent();

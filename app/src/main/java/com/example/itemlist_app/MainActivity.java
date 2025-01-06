@@ -36,11 +36,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         listView.setAdapter(customAdapter);
         listView.setOnItemClickListener(this);
 
-        // Toolbar setup
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // Floating Action Button (FAB)
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, AddItemActivity.class);
@@ -62,11 +62,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         // Modify the item in the list
                         itemList.get(position).setName(name);
                         itemList.get(position).setPrice(price);
-                        customAdapter.notifyDataSetChanged();  // This will update the UI
+                        customAdapter.notifyDataSetChanged();
                     } else {
-                        // Add new item if position is -1 (not editing an existing one)
-                        int id = itemList.size()+1;  // Use index as ID
-                        itemList.add(new Item(name, price, String.valueOf(id))); // Add new item with index as ID
+                        // Add new item if position is -1
+                        int id = itemList.size()+1;
+                        itemList.add(new Item(name, price, String.valueOf(id)));
                         customAdapter.notifyDataSetChanged();
                     }
 
