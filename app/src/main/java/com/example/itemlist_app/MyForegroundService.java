@@ -18,15 +18,12 @@ public class MyForegroundService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         new Thread(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d("Tag", "service is running now");
-                        try {
-                            Thread.sleep(5000);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
+                () -> {
+                    Log.d("Tag", "service is running now");
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
                     }
                 }
         ).start();

@@ -33,16 +33,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        Intent serviceIntent = new Intent(getApplicationContext(), MyForegroundService.class);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            startService(serviceIntent);
-//
-//        }
-//        foregroundServiceRunning();
-
-
-
-
+        Intent serviceIntent = new Intent(MainActivity.this, CounterService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(serviceIntent);
+        } else {
+            startService(serviceIntent);
+        }
 
 
         itemList = new ArrayList<>();
