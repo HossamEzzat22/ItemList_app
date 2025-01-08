@@ -66,13 +66,21 @@ public class CustomAdapter extends BaseAdapter {
         });
 
         holderView.deleteButton.setOnClickListener(v -> {
-            myItems.remove(position);
-            notifyDataSetChanged();
-            Toast.makeText(context, "Item deleted", Toast.LENGTH_SHORT).show();
+            new androidx.appcompat.app.AlertDialog.Builder(context)
+                    .setTitle("Confirm Delete")
+                    .setMessage("are you sure want to delete this item?")
+                    .setPositiveButton("confirm",((dialog, which) -> {
+                        myItems.remove(position);
+                        notifyDataSetChanged();
+                        Toast.makeText(context, "Item deleted", Toast.LENGTH_SHORT).show();
 
-            if (myItems.isEmpty()) {
-                ((MainActivity) context).updateEmptyListMessage();
-            }
+                        if (myItems.isEmpty()) {
+                            ((MainActivity) context).updateEmptyListMessage();
+                        }
+                    }))
+                    .setNegativeButton("cancel",((dialog, which) -> {
+                        dialog.dismiss();
+                    })).show();
         });
 
         return convertView;
